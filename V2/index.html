@@ -28,12 +28,10 @@
             100% { background-position: 0% 100%; }
         }
         
-        /* Képernyők */
         .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
         .screen.active { display: flex; }
         .content-box { z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
         
-        /* Háttér animáció (Szarvas) */
         .deer-particle { position: absolute; bottom: -100px; color: transparent; text-shadow: 0 0 5px rgba(242, 133, 0, 0.4), 0 0 10px rgba(255, 159, 28, 0.2); filter: blur(1px); z-index: 1; }
         @keyframes deerFloatUp {
             0% { transform: translateY(0) rotate(-10deg) scale(0.8); opacity: 0; }
@@ -43,7 +41,6 @@
             100% { transform: translateY(-120vh) rotate(-5deg) scale(1); opacity: 0; }
         }
 
-        /* Tipográfia és UI */
         h1 { font-size: 4.5rem; margin-bottom: 30px; text-align: center; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; text-shadow: 2px 4px 6px rgba(0,0,0,0.8); color: #f28500; z-index: 10; line-height: 1.1; }
         @media (max-width: 400px) { h1 { font-size: 3rem; } }
         .subtitle { font-size: 2rem; margin-bottom: 30px; text-align: center; color: #ff9f1c; text-shadow: 1px 2px 4px rgba(0,0,0,0.8); z-index: 10; }
@@ -61,7 +58,6 @@
         #mute-btn { position: absolute; top: 20px; right: 20px; font-size: 2rem; background: none; border: none; box-shadow: none; padding: 5px; margin: 0; z-index: 20; color: #f28500; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); width: auto; }
         .back-btn { position: absolute; top: 20px; left: 20px; font-size: 2rem; background: none; border: none; box-shadow: none; padding: 5px; margin: 0; z-index: 20; color: #f28500; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); cursor: pointer; width: auto; }
 
-        /* Memória Játék CSS */
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 12px; width: 90vw; max-width: 600px; height: 55vh; max-height: 650px; position: relative; z-index: 10; }
         .card { background-color: transparent; width: 100%; height: 100%; perspective: 1000px; cursor: pointer; transition: opacity 0.4s ease; z-index: 1; }
         .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
@@ -74,15 +70,13 @@
         .card-back { background-color: #1b321a; border: 3px solid #f28500; transform: rotateY(180deg); }
         .card-image { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.43); }
 
-        /* Jägerbomb Canvas */
         #bomb-game-screen {
             background-color: transparent; 
         }
         
         #bombCanvas { 
-            /* STATIKUS, VILÁGOSABB ZÖLD HÁTTÉR */
-            background-color: #2a4d29; /* Világosabb, élettel telibb zöld */
-            background-image: radial-gradient(circle at center, #355f33 0%, #2a4d29 100%); /* Enyhe belső ragyogás */
+            background-color: #2a4d29;
+            background-image: radial-gradient(circle at center, #355f33 0%, #2a4d29 100%);
             border: 4px solid #f28500; 
             border-radius: 12px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.9); 
@@ -93,7 +87,6 @@
             max-height: 700px; 
         }
         
-        /* Jägerbomb HUD */
         .hud-container { display: flex; justify-content: space-between; width: 90vw; max-width: 500px; margin-bottom: 10px; z-index: 10; }
         .lives-box { font-size: 1.5rem; color: #ff4757; text-shadow: 1px 1px 2px black; }
         .level-box { font-size: 1.5rem; color: #ffd700; text-shadow: 1px 1px 2px black; font-weight: bold; }
@@ -101,12 +94,10 @@
         .win-text { color: #f28500; }
         .lose-text { color: #ff4757; }
 
-        /* FESZÜLTSÉG EFFEKTEK */
         #tension-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 15; display: none; }
         .tension-active { display: block !important; animation: pulseRed var(--pulse-duration) ease-in-out infinite alternate; }
         @keyframes pulseRed { 0% { box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.1); background-color: rgba(255, 0, 0, 0); } 100% { box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.7); background-color: rgba(255, 0, 0, 0.15); } }
 
-        /* JÁTÉKVÉGI EFFEKTEK */
         #confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 50; display: none; }
         .confetti { position: absolute; top: -50px; width: 12px; height: 12px; opacity: 0.9; animation: fall linear forwards; }
         @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
@@ -121,7 +112,6 @@
     <div id="tension-overlay"></div>
     <button id="mute-btn" onclick="toggleMute()">🔊</button>
 
-    <!-- 1. FŐMENÜ -->
     <div id="start-screen" class="screen active">
         <div class="content-box">
             <h1>Jäger Party Games</h1>
@@ -129,7 +119,6 @@
         </div>
     </div>
 
-    <!-- 2. JÁTÉKMÓD VÁLASZTÓ -->
     <div id="mode-selection-screen" class="screen">
         <div class="content-box">
             <h2 class="subtitle">Válassz játékot!</h2>
@@ -141,14 +130,12 @@
         </div>
     </div>
 
-    <!-- 3A. MEMÓRIA JÁTÉK KÉPERNYŐ -->
     <div id="game-screen" class="screen">
         <button class="back-btn" onclick="backToMenuFromGame()">⬅️</button>
         <p class="timer-box">Idő: <span id="memory-time-left">60</span>s</p>
         <div class="grid" id="grid"></div>
     </div>
 
-    <!-- 3B. JÄGERBOMB DROP KÉPERNYŐ -->
     <div id="bomb-game-screen" class="screen">
         <button class="back-btn" onclick="backToMenuFromGame()">⬅️</button>
         <div class="hud-container">
@@ -159,7 +146,6 @@
         <p class="timer-box" style="margin-top: 15px;">Idő: <span id="bomb-time-left">60</span>s</p>
     </div>
 
-    <!-- 4. VÉGE KÉPERNYŐ -->
     <div id="end-screen" class="screen">
         <div id="clink-container">
             <div id="glass-1" class="left-glass">🥃</div>
@@ -174,9 +160,7 @@
     </div>
 
     <script>
-        // ---------------------------------------------------------
-        // HANGOK BEÁLLÍTÁSA
-        // ---------------------------------------------------------
+
         const bgMusic = new Audio('background.mp3'); bgMusic.loop = true; bgMusic.volume = 0.3; 
         const tickSound = new Audio('ticking.mp3'); tickSound.loop = true; tickSound.volume = 1.0;
         const matchSound = new Audio('correct.mp3'); matchSound.volume = 0.7;
@@ -197,9 +181,6 @@
             audioElement.play().catch(e => console.log("Hanglejátszási hiba:", e));
         }
 
-        // ---------------------------------------------------------
-        // SZARVAS PEZSGÉS HÁTTÉR
-        // ---------------------------------------------------------
         let deerInterval;
         function createDeerParticles() {
             removeDeerParticles();
@@ -220,9 +201,6 @@
         function removeDeerParticles() { clearInterval(deerInterval); document.querySelectorAll('.deer-particle').forEach(e => e.remove()); }
         createDeerParticles();
 
-        // ---------------------------------------------------------
-        // MENÜ NAVIGÁCIÓ
-        // ---------------------------------------------------------
         let currentGameMode = '';
 
         function hideAllScreens() { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); }
@@ -233,7 +211,6 @@
             isGameActive = false; clearInterval(timerInterval); cancelAnimationFrame(bombGameLoopId);
             bgMusic.pause(); tickSound.pause(); document.getElementById('tension-overlay').classList.remove('tension-active');
             
-            // Konfetti és koccintás azonnali eltüntetése
             document.getElementById('confetti-container').style.display = 'none';
             document.getElementById('clink-container').style.display = 'none';
 
@@ -281,9 +258,6 @@
             };
         }
 
-        // ---------------------------------------------------------
-        // 1. JÁTÉK: MEMÓRIA
-        // ---------------------------------------------------------
         const cardImages = ['card1.png', 'card2.png', 'card3.png', 'card4.png', 'card5.png', 'card6.png', 'card7.png', 'card8.png'];
         let flippedCards = []; let matchedPairs = 0; let isLocked = false; let cardElements = [];
 
@@ -291,7 +265,6 @@
             currentGameMode = 'memory'; isGameActive = true; 
             hideAllScreens(); removeDeerParticles(); document.getElementById('game-screen').classList.add('active');
             
-            // Effektek törlése
             document.getElementById('confetti-container').style.display = 'none'; document.getElementById('confetti-container').innerHTML = '';
             document.getElementById('clink-container').style.display = 'none';
             document.getElementById('glass-1').style.animation = 'none'; document.getElementById('glass-2').style.animation = 'none';
@@ -358,9 +331,6 @@
             }
         }
 
-        // ---------------------------------------------------------
-        // 2. JÁTÉK: JÄGERBOMB
-        // ---------------------------------------------------------
         const canvas = document.getElementById('bombCanvas');
         const ctx = canvas.getContext('2d');
         let bombGameLoopId;
@@ -436,7 +406,6 @@
             currentGameMode = 'bomb'; isGameActive = true; 
             hideAllScreens(); removeDeerParticles(); document.getElementById('bomb-game-screen').classList.add('active');
             
-            // Effektek törlése
             document.getElementById('confetti-container').style.display = 'none'; document.getElementById('confetti-container').innerHTML = '';
             document.getElementById('clink-container').style.display = 'none';
             document.getElementById('glass-1').style.animation = 'none'; document.getElementById('glass-2').style.animation = 'none';
@@ -473,7 +442,6 @@
         function drawBombGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Asztal rajzolása 
             ctx.fillStyle = "#5c3a21"; 
             ctx.fillRect(0, tableY, canvas.width, canvas.height - tableY);
             ctx.fillStyle = "#3e2312"; 
@@ -482,7 +450,6 @@
             ctx.fillStyle = "rgba(255,255,255,0.08)";
             ctx.fillRect(0, tableY+10, canvas.width, 5);
 
-            // Nagy poharak rajzolása
             cups.forEach(cup => {
                 if (cup.active) {
                     ctx.drawImage(cupImg, cup.x, cup.y, cup.w, cup.h);
@@ -494,7 +461,6 @@
                 }
             });
 
-            // Felespohár (Shot) rajzolása
             if (shot.y < tableY) {
                 ctx.save();
                 ctx.translate(shot.x + shot.w/2, shot.y + shot.h/2);
@@ -503,7 +469,6 @@
                 ctx.restore();
             }
 
-            // Részecskék (Csobbanás)
             for(let i=splashes.length-1; i>=0; i--) {
                 let p = splashes[i];
                 ctx.globalAlpha = p.life;
@@ -522,7 +487,7 @@
                     shot.speedX *= -1; 
                 }
             } else {
-                shot.speedY += 0.6; // Gravitáció
+                shot.speedY += 0.6;
                 shot.y += shot.speedY;
                 shot.angle += (shot.speedX > 0 ? 0.05 : -0.05);
 
@@ -539,7 +504,6 @@
                     });
 
                     if (hitCup && shot.y > hitCup.y + 10) {
-                        // SIKERES BOMB!
                         playSound(matchSound);
                         hitCup.active = false;
                         hitCup.splash = 1.0; 
@@ -561,7 +525,6 @@
                         }
                     } 
                     else if (shot.y + shot.h >= tableY) {
-                        // MELLÉMENT!
                         playSound(errorSound);
                         bombLives--;
                         updateLivesDisplay();
@@ -592,9 +555,6 @@
             bombGameLoopId = requestAnimationFrame(bombGameLoop);
         }
 
-        // ---------------------------------------------------------
-        // KÖZÖS EFFEKTEK
-        // ---------------------------------------------------------
         function startConfetti() {
             const container = document.getElementById('confetti-container'); container.style.display = 'block'; container.innerHTML = '';
             const colors = ['#f28500', '#ff9f1c', '#1b321a', '#ffffff'];
