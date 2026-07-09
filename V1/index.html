@@ -30,14 +30,12 @@
             100% { background-position: 0% 100%; }
         }
         
-        /* Főképernyő speciális beállítása a lebegő kártyákhoz */
         #start-screen { position: relative; overflow: hidden; width: 100%; height: 100%; }
         #start-content { z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
         
-        /* Lebegő, forgó háttérkártyák a főmenüben */
         .bg-card {
             position: absolute;
-            top: 0; /* <--- EZ OLDOTTA MEG AZ ELTŰNÉS PROBLÉMÁT */
+            top: 0; 
             width: 100px; 
             height: 140px; 
             background-color: #1b321a;
@@ -121,7 +119,6 @@
     <div id="tension-overlay"></div>
     <button id="mute-btn" onclick="toggleMute()">🔊</button>
 
-    <!-- FŐMENÜ -->
     <div id="start-screen" class="active">
         <div id="start-content">
             <h1>Jäger Party</h1>
@@ -129,14 +126,12 @@
         </div>
     </div>
 
-    <!-- JÁTÉK KÉPERNYŐ -->
     <div id="game-screen">
         <button id="back-btn" onclick="backToMenu()">⬅️</button>
         <p id="timer">Idő: <span id="time-left">60</span>s</p>
         <div class="grid" id="grid"></div>
     </div>
 
-    <!-- VÉGE KÉPERNYŐ -->
     <div id="end-screen">
         <div id="clink-container">
             <div id="glass-1" class="left-glass">🥃</div>
@@ -151,9 +146,7 @@
     </div>
 
     <script>
-        // ---------------------------------------------------------
-        // HANGOK BEÁLLÍTÁSA
-        // ---------------------------------------------------------
+
         const bgMusic = new Audio('background.mp3');
         bgMusic.loop = true;
         bgMusic.volume = 0.3; 
@@ -192,9 +185,6 @@
             audioElement.play().catch(e => console.log("Hanglejátszási hiba:", e));
         }
 
-        // ---------------------------------------------------------
-        // FŐMENÜ LEBEGŐ KÁRTYÁK GENERÁLÁSA
-        // ---------------------------------------------------------
         function createFloatingCards() {
             const startScreen = document.getElementById('start-screen');
             document.querySelectorAll('.bg-card').forEach(e => e.remove());
@@ -216,9 +206,6 @@
         
         createFloatingCards();
 
-        // ---------------------------------------------------------
-        // JÁTÉK LOGIKA
-        // ---------------------------------------------------------
         const cardImages = [
             'card1.png', 'card2.png', 'card3.png', 'card4.png', 
             'card5.png', 'card6.png', 'card7.png', 'card8.png'
