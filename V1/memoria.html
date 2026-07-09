@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Jäger Party Match</title>
+    <style>
+        :root {
+            --pulse-duration: 1s; 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #1b321a; 
+            background-image: radial-gradient(circle at center, #2a4d29 0%, #101e10 80%);
+            background-size: 200% 200%;
+            animation: wanderGlow 15s ease-in-out infinite alternate;
+            color: #f28500; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; overflow: hidden; 
+        }
+
+        @keyframes wanderGlow {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 100%; }
+        }
+        
+        /* Főképernyő speciális beállítása a lebegő kártyákhoz */
+        #start-screen { position: relative; overflow: hidden; width: 100%; height: 100%; }
+        #start-content { z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        
+        /* Lebegő, forgó háttérkártyák a főmenüben */
+        .bg-card {
+            position: absolute;
+            top: 0; /* <--- EZ OLDOTTA MEG AZ ELTŰNÉS PROBLÉMÁT */
+            width: 100px; 
+            height: 140px; 
+            background-color: #1b321a;
+            border: 4px solid #f28500;
+            border-radius: 8px;
+            opacity: 0.25; 
+            filter: blur(2px); 
+            z-index: 1;
+        }
+
+        @keyframes floatAndFlip {
+            0% { transform: translateY(110vh) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            50% { background-color: #f28500; border-color: #1b321a; } 
+            100% { transform: translateY(-40vh) rotateX(360deg) rotateY(180deg) rotateZ(90deg); }
+        }
+
+        #start-screen, #game-screen, #end-screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        #start-screen.active, #game-screen.active, #end-screen.active { display: flex; }
+
+        h1 { font-size: 3.5rem; margin-bottom: 20px; text-align: center; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; text-shadow: 2px 4px 6px rgba(0,0,0,0.8); color: #f28500; z-index: 10; }
+        
+        p#timer { font-size: 2rem; font-weight: bold; margin-bottom: 20px; color: #1b321a; background: #f28500; padding: 5px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 2px solid #ff9f1c; z-index: 10; }
+        
+        button { padding: 15px 50px; font-size: 1.5rem; background-color: #f28500; color: #1b321a; border: 2px solid #ff9f1c; border-radius: 8px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.6); transition: all 0.1s; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; z-index: 10; }
+        button:active { transform: scale(0.95); background-color: #d17300; }
+
+        .button-group { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; z-index: 10; }
+        .secondary-btn { padding: 10px 40px; font-size: 1.1rem; background-color: transparent; color: #f28500; border: 2px solid #f28500; box-shadow: none; }
+        .secondary-btn:active { background-color: rgba(242, 133, 0, 0.1); transform: scale(0.95); }
+
+        #mute-btn { position: absolute; top: 20px; right: 20px; font-size: 2rem; background: none; border: none; box-shadow: none; padding: 5px; margin: 0; z-index: 20; color: #f28500; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        #mute-btn:active { transform: scale(0.8); background: none; }
+
+        #back-btn { position: absolute; top: 20px; left: 20px; font-size: 2rem; background: none; border: none; box-shadow: none; padding: 5px; margin: 0; z-index: 20; color: #f28500; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); cursor: pointer; }
+        #back-btn:active { transform: scale(0.8); background: none; }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 12px; width: 90vw; max-width: 600px; height: 55vh; max-height: 650px; position: relative; z-index: 10; }
+        
+        .card { background-color: transparent; width: 100%; height: 100%; perspective: 1000px; cursor: pointer; transition: opacity 0.4s ease; z-index: 1; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+        .card.matched { opacity: 0; pointer-events: none; }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px) rotate(-3deg); }
+            40%, 80% { transform: translateX(8px) rotate(3deg); }
+        }
+        .card.shake { animation: shakeError 0.4s ease-in-out; }
+
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 8px; box-shadow: 0 6px 12px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-front { background-color: #1b321a; border: 3px solid #f28500; font-size: 3rem; }
+        .card-back { background-color: #1b321a; border: 3px solid #f28500; transform: rotateY(180deg); }
+
+        .card-image { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.43); }
+
+        .win-text { color: #f28500; }
+        .lose-text { color: #ff4757; }
+
+        /* FESZÜLTSÉG EFFEKTEK */
+        #tension-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 15; display: none; }
+        .tension-active { display: block !important; animation: pulseRed var(--pulse-duration) ease-in-out infinite alternate; }
+        @keyframes pulseRed {
+            0% { box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.1); background-color: rgba(255, 0, 0, 0); }
+            100% { box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.7); background-color: rgba(255, 0, 0, 0.15); }
+        }
+
+        /* JÁTÉKVÉGI EFFEKTEK */
+        #confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 5; display: none; }
+        .confetti { position: absolute; top: -50px; width: 12px; height: 12px; opacity: 0.9; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+        #clink-container { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 0; opacity: 0.25; font-size: 8rem; display: none; gap: 10px; pointer-events: none; }
+        .left-glass, .right-glass { display: inline-block; }
+        @keyframes clinkLeft { 0% { transform: translateX(-150px) rotate(-45deg) scale(0.5); opacity: 0; } 50% { transform: translateX(20px) rotate(15deg) scale(1.3); opacity: 1; } 70% { transform: translateX(-10px) rotate(-5deg) scale(1.1); opacity: 1; } 100% { transform: translateX(0) rotate(0deg) scale(1); opacity: 1; } }
+        @keyframes clinkRight { 0% { transform: translateX(150px) rotate(45deg) scale(0.5); opacity: 0; } 50% { transform: translateX(-20px) rotate(-15deg) scale(1.3); opacity: 1; } 70% { transform: translateX(10px) rotate(5deg) scale(1.1); opacity: 1; } 100% { transform: translateX(0) rotate(0deg) scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div id="tension-overlay"></div>
+    <button id="mute-btn" onclick="toggleMute()">🔊</button>
+
+    <!-- FŐMENÜ -->
+    <div id="start-screen" class="active">
+        <div id="start-content">
+            <h1>Jäger Party</h1>
+            <button onclick="startGame()">Start</button>
+        </div>
+    </div>
+
+    <!-- JÁTÉK KÉPERNYŐ -->
+    <div id="game-screen">
+        <button id="back-btn" onclick="backToMenu()">⬅️</button>
+        <p id="timer">Idő: <span id="time-left">60</span>s</p>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <!-- VÉGE KÉPERNYŐ -->
+    <div id="end-screen">
+        <div id="clink-container">
+            <div id="glass-1" class="left-glass">🥃</div>
+            <div id="glass-2" class="right-glass">🥃</div>
+        </div>
+        <div id="confetti-container"></div>
+        <h1 id="end-message" style="z-index: 10;"></h1>
+        <div class="button-group">
+            <button onclick="startGame()">Újra</button>
+            <button class="secondary-btn" onclick="goToMenu()">Menü</button>
+        </div>
+    </div>
+
+    <script>
+        // ---------------------------------------------------------
+        // HANGOK BEÁLLÍTÁSA
+        // ---------------------------------------------------------
+        const bgMusic = new Audio('background.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.3; 
+
+        const tickSound = new Audio('ticking.mp3');
+        tickSound.loop = true;
+        tickSound.volume = 1.0;
+
+        const matchSound = new Audio('correct.mp3');
+        const errorSound = new Audio('error.mp3');
+        const winSound = new Audio('win.mp3');
+        const loseSound = new Audio('lose.mp3'); 
+
+        matchSound.volume = 0.7;
+        errorSound.volume = 0.6;
+        winSound.volume = 0.9;
+        loseSound.volume = 0.9;
+
+        let isMuted = false;
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('mute-btn').innerText = isMuted ? '🔇' : '🔊';
+            
+            bgMusic.muted = isMuted;
+            tickSound.muted = isMuted;
+            matchSound.muted = isMuted;
+            errorSound.muted = isMuted;
+            winSound.muted = isMuted;
+            loseSound.muted = isMuted;
+        }
+
+        function playSound(audioElement) {
+            if (isMuted) return;
+            audioElement.currentTime = 0; 
+            audioElement.play().catch(e => console.log("Hanglejátszási hiba:", e));
+        }
+
+        // ---------------------------------------------------------
+        // FŐMENÜ LEBEGŐ KÁRTYÁK GENERÁLÁSA
+        // ---------------------------------------------------------
+        function createFloatingCards() {
+            const startScreen = document.getElementById('start-screen');
+            document.querySelectorAll('.bg-card').forEach(e => e.remove());
+            
+            for(let i=0; i<6; i++) {
+                const bgCard = document.createElement('div');
+                bgCard.className = 'bg-card';
+                
+                let sectionWidth = 100 / 6;
+                let randomOffset = Math.random() * (sectionWidth * 0.8); 
+                bgCard.style.left = `${(i * sectionWidth) + randomOffset}vw`;
+                
+                bgCard.style.animation = `floatAndFlip ${Math.random() * 6 + 10}s infinite linear`;
+                bgCard.style.animationDelay = `-${Math.random() * 10}s`; 
+                
+                startScreen.appendChild(bgCard);
+            }
+        }
+        
+        createFloatingCards();
+
+        // ---------------------------------------------------------
+        // JÁTÉK LOGIKA
+        // ---------------------------------------------------------
+        const cardImages = [
+            'card1.png', 'card2.png', 'card3.png', 'card4.png', 
+            'card5.png', 'card6.png', 'card7.png', 'card8.png'
+        ];
+        
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let timerInterval;
+        let timeLeft = 60;
+        let isLocked = false;
+        let cardElements = [];
+        let isGameActive = false;
+
+        function startGame() {
+            isGameActive = true; 
+            
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('end-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            
+            document.getElementById('confetti-container').style.display = 'none';
+            document.getElementById('confetti-container').innerHTML = '';
+            document.getElementById('clink-container').style.display = 'none';
+            document.getElementById('glass-1').style.animation = 'none';
+            document.getElementById('glass-2').style.animation = 'none';
+            
+            tickSound.pause();
+            tickSound.currentTime = 0;
+            tickSound.playbackRate = 1.0;
+            document.getElementById('tension-overlay').classList.remove('tension-active');
+            document.documentElement.style.setProperty('--pulse-duration', '1s');
+            
+            timeLeft = 60;
+            matchedPairs = 0;
+            flippedCards = [];
+            document.getElementById('time-left').innerText = timeLeft;
+            
+            if (!isMuted) {
+                bgMusic.currentTime = 0;
+                bgMusic.volume = 0.3; 
+                bgMusic.play().catch(e => console.log("Zene hiba:", e));
+            }
+
+            setupBoard();
+        }
+
+        function backToMenu() {
+            isGameActive = false; 
+            clearInterval(timerInterval); 
+            bgMusic.pause(); 
+            tickSound.pause();
+            document.getElementById('tension-overlay').classList.remove('tension-active');
+            
+            document.getElementById('game-screen').classList.remove('active');
+            createFloatingCards(); 
+            document.getElementById('start-screen').classList.add('active');
+        }
+
+        function goToMenu() {
+            document.getElementById('end-screen').classList.remove('active');
+            createFloatingCards(); 
+            document.getElementById('start-screen').classList.add('active');
+        }
+
+        function setupBoard() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            cardElements = [];
+            
+            let orderedCards = [...cardImages, ...cardImages];
+            isLocked = true;
+
+            orderedCards.forEach((imgSrc) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.classList.add('flipped'); 
+                card.dataset.value = imgSrc; 
+                
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">🦌</div>
+                        <div class="card-back">
+                            <img src="${imgSrc}" class="card-image" alt="Jäger card">
+                        </div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => flipCard(card));
+                grid.appendChild(card);
+                cardElements.push(card);
+            });
+
+            setTimeout(() => { 
+                if(isGameActive) startContinuousShuffle(); 
+            }, 800);
+        }
+
+        function startContinuousShuffle() {
+            let shuffleCount = 0;
+            const maxShuffles = 5; 
+            const shuffleDuration = 600; 
+            const grid = document.getElementById('grid');
+
+            function performShuffleStep() {
+                if (!isGameActive) return; 
+
+                const firstRects = new Map();
+                cardElements.forEach(card => firstRects.set(card, card.getBoundingClientRect()));
+
+                for (let i = cardElements.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cardElements[i], cardElements[j]] = [cardElements[j], cardElements[i]];
+                }
+                cardElements.forEach(card => grid.appendChild(card));
+
+                cardElements.forEach(card => {
+                    const first = firstRects.get(card);
+                    const last = card.getBoundingClientRect();
+                    card.style.transition = 'none';
+                    card.style.transform = `translate(${first.left - last.left}px, ${first.top - last.top}px)`;
+                    card.style.zIndex = Math.floor(Math.random() * 10) + 2; 
+                });
+
+                void grid.offsetWidth;
+
+                cardElements.forEach(card => {
+                    card.style.transition = `transform ${shuffleDuration}ms ease-in-out`;
+                    card.style.transform = 'translate(0, 0)';
+                });
+
+                shuffleCount++;
+                if (shuffleCount < maxShuffles) {
+                    setTimeout(performShuffleStep, shuffleDuration);
+                } else {
+                    setTimeout(() => {
+                        if (!isGameActive) return; 
+                        cardElements.forEach(c => {
+                            c.classList.remove('flipped');
+                            c.style.zIndex = 1;
+                            c.style.transition = 'opacity 0.4s ease'; 
+                        });
+                        setTimeout(() => { 
+                            if (!isGameActive) return; 
+                            isLocked = false; 
+                            startTimer(); 
+                        }, 500);
+                    }, 1750); 
+                }
+            }
+            performShuffleStep();
+        }
+
+        function flipCard(card) {
+            if (isLocked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            card.classList.add('flipped');
+            flippedCards.push(card);
+            if (flippedCards.length === 2) checkMatch();
+        }
+
+        function checkMatch() {
+            isLocked = true;
+            const [card1, card2] = flippedCards;
+
+            if (card1.dataset.value === card2.dataset.value) {
+                playSound(matchSound);
+                
+                setTimeout(() => {
+                    if (!isGameActive) return;
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedPairs++;
+                    flippedCards = [];
+                    isLocked = false;
+                    if (matchedPairs === 8) endGame(true);
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    if (!isGameActive) return;
+                    playSound(errorSound); 
+                    card1.classList.add('shake');
+                    card2.classList.add('shake');
+                    
+                    setTimeout(() => {
+                        if (!isGameActive) return;
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        
+                        setTimeout(() => {
+                            if (!isGameActive) return;
+                            card1.classList.remove('shake');
+                            card2.classList.remove('shake');
+                            flippedCards = [];
+                            isLocked = false;
+                        }, 500);
+                    }, 400); 
+                }, 500);
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (!isGameActive) {
+                    clearInterval(timerInterval);
+                    return;
+                }
+                timeLeft--;
+                document.getElementById('time-left').innerText = timeLeft;
+                
+                if (timeLeft === 10) {
+                    if (!isMuted) tickSound.play().catch(e=>console.log(e));
+                    document.getElementById('tension-overlay').classList.add('tension-active');
+                    bgMusic.volume = 0.1; 
+                }
+                
+                if (timeLeft <= 10 && timeLeft > 0) {
+                    let rate = 0.7 + ((10 - timeLeft) * 0.1);
+                    tickSound.playbackRate = rate;
+                    
+                    let pulseDuration = 1.2 - ((10 - timeLeft) * 0.08);
+                    document.documentElement.style.setProperty('--pulse-duration', `${pulseDuration}s`);
+                }
+
+                if (timeLeft <= 0) endGame(false);
+            }, 1000);
+        }
+
+        function endGame(isWin) {
+            isGameActive = false; 
+            clearInterval(timerInterval);
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('end-screen').classList.add('active');
+            
+            bgMusic.pause();
+            tickSound.pause();
+            document.getElementById('tension-overlay').classList.remove('tension-active');
+            
+            const endMessage = document.getElementById('end-message');
+            
+            if (isWin) {
+                playSound(winSound); 
+                endMessage.innerHTML = 'Egészségedre!<br>Nyertél! 🥃';
+                endMessage.className = 'win-text';
+                startConfetti();
+                triggerClinkAnimation();
+            } else {
+                playSound(loseSound); 
+                endMessage.innerText = 'Sajnos lejárt az idő! 🚫';
+                endMessage.className = 'lose-text';
+            }
+        }
+
+        function startConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.style.display = 'block';
+            container.innerHTML = '';
+            const colors = ['#f28500', '#ff9f1c', '#1b321a', '#ffffff'];
+            for (let i = 0; i < 70; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                if (i % 10 === 0) {
+                    confetti.innerText = Math.random() > 0.5 ? '🥃' : '🎉';
+                    confetti.style.fontSize = '2rem';
+                    confetti.style.background = 'transparent';
+                } else {
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                }
+                container.appendChild(confetti);
+            }
+        }
+
+        function triggerClinkAnimation() {
+            const container = document.getElementById('clink-container');
+            const glass1 = document.getElementById('glass-1');
+            const glass2 = document.getElementById('glass-2');
+            container.style.display = 'flex';
+            glass1.style.animation = 'clinkLeft 1.2s ease-out forwards';
+            glass2.style.animation = 'clinkRight 1.2s ease-out forwards';
+        }
+
+    </script>
+</body>
+</html>

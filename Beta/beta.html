@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Jäger Party Match</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #1b321a; 
+            background-image: radial-gradient(circle, #2a4d29 0%, #101e10 100%);
+            color: #f28500; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; overflow: hidden; 
+        }
+        
+        #start-screen, #game-screen, #end-screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        #start-screen.active, #game-screen.active, #end-screen.active { display: flex; }
+
+        h1 { font-size: 3.5rem; margin-bottom: 20px; text-align: center; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; text-shadow: 2px 4px 6px rgba(0,0,0,0.8); color: #f28500; }
+        
+        p#timer { font-size: 2rem; font-weight: bold; margin-bottom: 20px; color: #1b321a; background: #f28500; padding: 5px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 2px solid #ff9f1c; }
+        
+        button { padding: 15px 50px; font-size: 1.5rem; background-color: #f28500; color: #1b321a; border: 2px solid #ff9f1c; border-radius: 8px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.6); transition: all 0.1s; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        button:active { transform: scale(0.95); background-color: #d17300; }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 12px; width: 90vw; max-width: 600px; height: 60vh; max-height: 700px; position: relative; }
+        
+        .card { background-color: transparent; width: 100%; height: 100%; perspective: 1000px; cursor: pointer; transition: opacity 0.4s ease; z-index: 1; }
+        
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+        
+        .card.matched { opacity: 0; pointer-events: none; }
+
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; box-shadow: 0 6px 12px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+        
+        .card-front { 
+            background-color: #1b321a; 
+            border: 3px solid #f28500;
+            font-size: 3rem;
+        }
+        
+        .card-back { 
+            background-color: #f28500; 
+            border: 3px solid #1b321a;
+            color: #1b321a;
+            transform: rotateY(180deg); 
+            font-size: 3.5rem;
+        }
+        
+        .win-text { color: #f28500; }
+        .lose-text { color: #ff4757; }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="active">
+        <h1>Jäger Memory</h1>
+        <button onclick="startGame()">Start</button>
+    </div>
+
+    <div id="game-screen">
+        <p id="timer">Idő: <span id="time-left">60</span>s</p>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <div id="end-screen">
+        <h1 id="end-message"></h1>
+        <button onclick="resetGame()">Új Kör</button>
+    </div>
+
+    <script>
+        const partyEmojis = ['🥃', '🍻', '🎉', '🕺', '🎊', '🍾', '🥳', '🎵'];
+        
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let timerInterval;
+        let timeLeft = 60;
+        let isLocked = false;
+        let cardElements = [];
+
+        function startGame() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('end-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            
+            timeLeft = 60;
+            matchedPairs = 0;
+            flippedCards = [];
+            document.getElementById('time-left').innerText = timeLeft;
+            
+            setupBoard();
+        }
+
+        function setupBoard() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            cardElements = [];
+            
+            let orderedCards = [...partyEmojis, ...partyEmojis];
+
+            isLocked = true; // Zároljuk a pályát
+
+            orderedCards.forEach((emoji) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.classList.add('flipped'); // Rendezve, felfordítva indul
+                card.dataset.emoji = emoji;
+                
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">🦌</div>
+                        <div class="card-back">${emoji}</div>
+                    </div>
+                `;
+                card.addEventListener('click', () => flipCard(card));
+                grid.appendChild(card);
+                cardElements.push(card);
+            });
+
+            // 0.8 másodperc múlva elindul a 3 másodperces, folyamatos keverés
+            setTimeout(() => {
+                startContinuousShuffle();
+            }, 800);
+        }
+
+        function startContinuousShuffle() {
+            let shuffleCount = 0;
+            const maxShuffles = 5; // 5 egymás utáni keverés
+            const shuffleDuration = 600; // 600ms per keverés (5x600 = 3000ms = 3mp)
+            const grid = document.getElementById('grid');
+
+            function performShuffleStep() {
+                // 1. Megjegyezzük az aktuális pozíciókat
+                const firstRects = new Map();
+                cardElements.forEach(card => firstRects.set(card, card.getBoundingClientRect()));
+
+                // 2. Összekeverjük a kártyákat a memóriában és a rácsban
+                for (let i = cardElements.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cardElements[i], cardElements[j]] = [cardElements[j], cardElements[i]];
+                }
+                cardElements.forEach(card => grid.appendChild(card));
+
+                // 3. Visszarántjuk őket az előző pozíciójukba animáció nélkül
+                cardElements.forEach(card => {
+                    const first = firstRects.get(card);
+                    const last = card.getBoundingClientRect();
+                    const deltaX = first.left - last.left;
+                    const deltaY = first.top - last.top;
+                    
+                    card.style.transition = 'none';
+                    card.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                    card.style.zIndex = Math.floor(Math.random() * 10) + 2; 
+                });
+
+                // Böngésző reflow (kirajzolás) kényszerítése
+                void grid.offsetWidth;
+
+                // 4. Elindítjuk a mozgást az új helyükre
+                cardElements.forEach(card => {
+                    card.style.transition = `transform ${shuffleDuration}ms ease-in-out`;
+                    card.style.transform = 'translate(0, 0)';
+                });
+
+                shuffleCount++;
+
+                if (shuffleCount < maxShuffles) {
+                    // Ha még nincs meg az 5 keverés, jöhet a következő
+                    setTimeout(performShuffleStep, shuffleDuration);
+                } else {
+                    // --- KEVERÉS VÉGE ---
+                    // 1,75 másodperc (1750 ms) memorizálási idő indul
+                    setTimeout(() => {
+                        cardElements.forEach(c => {
+                            c.classList.remove('flipped');
+                            c.style.zIndex = 1;
+                            c.style.transition = 'opacity 0.4s ease'; // Transform levétele a játék idejére
+                        });
+                        
+                        // Fél másodperc alatt lefordulnak, utána mehet a játék
+                        setTimeout(() => {
+                            isLocked = false;
+                            startTimer();
+                        }, 500);
+                        
+                    }, 1750); // <--- Itt van az 1.75 másodperces memorizálási ablak
+                }
+            }
+
+            // Indítjuk az első lépést
+            performShuffleStep();
+        }
+
+        function flipCard(card) {
+            if (isLocked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            isLocked = true;
+            const [card1, card2] = flippedCards;
+
+            if (card1.dataset.emoji === card2.dataset.emoji) {
+                setTimeout(() => {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedPairs++;
+                    flippedCards = [];
+                    isLocked = false;
+                    
+                    if (matchedPairs === 8) {
+                        endGame(true);
+                    }
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                    isLocked = false;
+                }, 1000);
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time-left').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame(false);
+                }
+            }, 1000);
+        }
+
+        function endGame(isWin) {
+            clearInterval(timerInterval);
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('end-screen').classList.add('active');
+            
+            const endMessage = document.getElementById('end-message');
+            if (isWin) {
+                endMessage.innerText = 'Egészségedre! Nyertél! 🥃';
+                endMessage.className = 'win-text';
+            } else {
+                endMessage.innerText = 'Sajnos lejárt az idő! 🚫';
+                endMessage.className = 'lose-text';
+            }
+        }
+
+        function resetGame() {
+            startGame();
+        }
+    </script>
+</body>
+</html>
