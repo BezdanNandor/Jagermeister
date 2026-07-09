@@ -104,12 +104,12 @@
             
             let orderedCards = [...partyEmojis, ...partyEmojis];
 
-            isLocked = true; // Zároljuk a pályát
+            isLocked = true;
 
             orderedCards.forEach((emoji) => {
                 const card = document.createElement('div');
                 card.classList.add('card');
-                card.classList.add('flipped'); // Rendezve, felfordítva indul
+                card.classList.add('flipped');
                 card.dataset.emoji = emoji;
                 
                 card.innerHTML = `
@@ -122,8 +122,6 @@
                 grid.appendChild(card);
                 cardElements.push(card);
             });
-
-            // 0.8 másodperc múlva elindul a 3 másodperces, folyamatos keverés
             setTimeout(() => {
                 startContinuousShuffle();
             }, 800);
@@ -131,23 +129,20 @@
 
         function startContinuousShuffle() {
             let shuffleCount = 0;
-            const maxShuffles = 5; // 5 egymás utáni keverés
-            const shuffleDuration = 600; // 600ms per keverés (5x600 = 3000ms = 3mp)
+            const maxShuffles = 5;
+            const shuffleDuration = 600;
             const grid = document.getElementById('grid');
 
             function performShuffleStep() {
-                // 1. Megjegyezzük az aktuális pozíciókat
                 const firstRects = new Map();
                 cardElements.forEach(card => firstRects.set(card, card.getBoundingClientRect()));
 
-                // 2. Összekeverjük a kártyákat a memóriában és a rácsban
                 for (let i = cardElements.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [cardElements[i], cardElements[j]] = [cardElements[j], cardElements[i]];
                 }
                 cardElements.forEach(card => grid.appendChild(card));
 
-                // 3. Visszarántjuk őket az előző pozíciójukba animáció nélkül
                 cardElements.forEach(card => {
                     const first = firstRects.get(card);
                     const last = card.getBoundingClientRect();
@@ -159,10 +154,8 @@
                     card.style.zIndex = Math.floor(Math.random() * 10) + 2; 
                 });
 
-                // Böngésző reflow (kirajzolás) kényszerítése
                 void grid.offsetWidth;
 
-                // 4. Elindítjuk a mozgást az új helyükre
                 cardElements.forEach(card => {
                     card.style.transition = `transform ${shuffleDuration}ms ease-in-out`;
                     card.style.transform = 'translate(0, 0)';
@@ -171,25 +164,21 @@
                 shuffleCount++;
 
                 if (shuffleCount < maxShuffles) {
-                    // Ha még nincs meg az 5 keverés, jöhet a következő
                     setTimeout(performShuffleStep, shuffleDuration);
                 } else {
-                    // --- KEVERÉS VÉGE ---
-                    // 1,75 másodperc (1750 ms) memorizálási idő indul
                     setTimeout(() => {
                         cardElements.forEach(c => {
                             c.classList.remove('flipped');
                             c.style.zIndex = 1;
-                            c.style.transition = 'opacity 0.4s ease'; // Transform levétele a játék idejére
+                            c.style.transition = 'opacity 0.4s ease'; 
                         });
                         
-                        // Fél másodperc alatt lefordulnak, utána mehet a játék
                         setTimeout(() => {
                             isLocked = false;
                             startTimer();
                         }, 500);
                         
-                    }, 1750); // <--- Itt van az 1.75 másodperces memorizálási ablak
+                    }, 1750);
                 }
             }
 
