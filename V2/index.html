@@ -17,23 +17,31 @@
             height: 100vh; overflow: hidden; 
         }
         @keyframes wanderGlow { 0% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } 100% { background-position: 0% 100%; } }
+        
         .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
         .screen.active { display: flex; }
         .content-box { z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        
         .deer-particle { position: absolute; bottom: -100px; color: transparent; text-shadow: 0 0 5px rgba(242, 133, 0, 0.4), 0 0 10px rgba(255, 159, 28, 0.2); filter: blur(1px); z-index: 1; }
         @keyframes deerFloatUp { 0% { transform: translateY(0) rotate(-10deg) scale(0.8); opacity: 0; } 10% { opacity: 0.6; } 50% { transform: translateY(-50vh) rotate(10deg) scale(1.2); opacity: 0.8; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh) rotate(-5deg) scale(1); opacity: 0; } }
+
         h1 { font-size: 4.5rem; margin-bottom: 30px; text-align: center; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; text-shadow: 2px 4px 6px rgba(0,0,0,0.8); color: #f28500; z-index: 10; line-height: 1.1; }
         @media (max-width: 400px) { h1 { font-size: 3rem; } }
-        .subtitle { font-size: 2rem; margin-bottom: 30px; text-align: center; color: #ff9f1c; text-shadow: 1px 2px 4px rgba(0,0,0,0.8); z-index: 10; }
+        .subtitle { font-size: 2.5rem; margin-bottom: 30px; text-align: center; color: #ff9f1c; text-shadow: 1px 2px 4px rgba(0,0,0,0.8); z-index: 10; }
         .timer-box { font-size: 2rem; font-weight: bold; margin-bottom: 20px; color: #1b321a; background: #f28500; padding: 5px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 2px solid #ff9f1c; z-index: 10; pointer-events: none; }
+        
         button { padding: 15px 30px; font-size: 1.5rem; background-color: #f28500; color: #1b321a; border: 2px solid #ff9f1c; border-radius: 8px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.6); transition: all 0.1s; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; z-index: 20; margin-bottom: 15px; width: auto; white-space: nowrap; }
         button:active { transform: scale(0.95); background-color: #d17300; }
         @media (max-width: 350px) { button { font-size: 1.2rem; padding: 15px 20px;} }
+
         .button-group { display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 10; }
         .secondary-btn { padding: 10px 40px; font-size: 1.1rem; background-color: transparent; color: #f28500; border: 2px solid #f28500; box-shadow: none; margin-top: 10px; }
         .secondary-btn:active { background-color: rgba(242, 133, 0, 0.1); transform: scale(0.95); }
+        
         #mute-btn { position: absolute; top: 20px; right: 20px; font-size: 2rem; background: none; border: none; box-shadow: none; padding: 5px; margin: 0; z-index: 50; color: #f28500; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); width: auto; cursor: pointer; }
         .back-btn { position: absolute; top: 20px; left: 20px; font-size: 2rem; background: none; border: none; box-shadow: none; padding: 5px; margin: 0; z-index: 50; color: #f28500; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); cursor: pointer; width: auto; }
+        .settings-btn { position: absolute; top: 20px; left: 80px; font-size: 2rem; background: none; border: none; box-shadow: none; padding: 5px; margin: 0; z-index: 50; color: #f28500; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); cursor: pointer; width: auto; }
+
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 12px; width: 90vw; max-width: 600px; height: 55vh; max-height: 650px; position: relative; z-index: 10; }
         .card { background-color: transparent; width: 100%; height: 100%; perspective: 1000px; cursor: pointer; transition: opacity 0.4s ease; z-index: 1; }
         .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
@@ -45,16 +53,23 @@
         .card-front { background-color: #1b321a; border: 3px solid #f28500; font-size: 3rem; }
         .card-back { background-color: #1b321a; border: 3px solid #f28500; transform: rotateY(180deg); }
         .card-image { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.43); }
+
         .game-canvas { border: 4px solid #f28500; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); pointer-events: none; width: 100vw; max-width: 600px; height: 75vh; max-height: 800px; }
         #bombCanvas { background-color: #1a331f; }
         #towerCanvas { background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%); }
+        #spinCanvas { background-color: #3e271c; border-radius: 50%; width: 90vw; max-width: 500px; height: 90vw; max-height: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.9); pointer-events: auto; }
+
+        .spin-pointer { position: absolute; top: 8%; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 35px solid #dcdcdc; z-index: 25; filter: drop-shadow(0px 6px 6px rgba(0,0,0,0.9)); }
+
         .hud-container { display: flex; justify-content: space-between; width: 90vw; max-width: 600px; margin-bottom: 10px; z-index: 10; pointer-events: none; }
         .lives-box { font-size: 1.5rem; color: #ff4757; text-shadow: 1px 1px 2px black; pointer-events: none;}
         .level-box { font-size: 1.5rem; color: #ffd700; text-shadow: 1px 1px 2px black; font-weight: bold; pointer-events: none;}
         .win-text { color: #f28500; } .lose-text { color: #ff4757; }
+
         #tension-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 15; display: none; }
         .tension-active { display: block !important; animation: pulseRed var(--pulse-duration) ease-in-out infinite alternate; }
         @keyframes pulseRed { 0% { box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.1); background-color: rgba(255, 0, 0, 0); } 100% { box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.7); background-color: rgba(255, 0, 0, 0.15); } }
+
         #confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 50; display: none; }
         .confetti { position: absolute; top: -50px; width: 12px; height: 12px; opacity: 0.9; animation: fall linear forwards; }
         @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
@@ -62,6 +77,16 @@
         .left-glass, .right-glass { display: inline-block; }
         @keyframes clinkLeft { 0% { transform: translateX(-150px) rotate(-45deg) scale(0.5); opacity: 0; } 50% { transform: translateX(20px) rotate(15deg) scale(1.3); opacity: 1; } 70% { transform: translateX(-10px) rotate(-5deg) scale(1.1); opacity: 1; } 100% { transform: translateX(0) rotate(0deg) scale(1); opacity: 1; } }
         @keyframes clinkRight { 0% { transform: translateX(150px) rotate(45deg) scale(0.5); opacity: 0; } 50% { transform: translateX(-20px) rotate(-15deg) scale(1.3); opacity: 1; } 70% { transform: translateX(10px) rotate(5deg) scale(1.1); opacity: 1; } 100% { transform: translateX(0) rotate(0deg) scale(1); opacity: 1; } }
+
+        #settings-modal { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(27, 50, 26, 0.95); border: 2px solid #f28500; border-radius: 12px; padding: 20px; width: 90vw; max-width: 400px; z-index: 100; flex-direction: column; align-items: center; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        #settings-modal h2 { color: #f28500; margin-bottom: 15px; }
+        #item-list { width: 100%; max-height: 200px; overflow-y: auto; margin-bottom: 15px; }
+        .item-row { display: flex; justify-content: space-between; background: rgba(0,0,0,0.4); padding: 8px; margin-bottom: 5px; border-radius: 4px; color: white; align-items: center; }
+        .del-btn { background: #ff4757; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 1rem; width: auto; margin: 0;}
+        .input-row { display: flex; width: 100%; gap: 5px; margin-bottom: 15px; }
+        #new-item-input { flex-grow: 1; padding: 10px; font-size: 1.2rem; border-radius: 4px; border: 1px solid #f28500; background: #222; color: white; }
+        #add-btn { width: auto; padding: 10px 15px; margin: 0; font-size: 1.2rem; }
+        #close-settings-btn { width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -83,6 +108,7 @@
                 <button onclick="startMemoryGame()">Memóriajáték</button>
                 <button onclick="startBombDropGame()">Jägerbomb</button> 
                 <button onclick="startTowerGame()">Stack 'Em High</button> 
+                <button onclick="startSpinGame()">Jäger Spin</button> 
                 <button class="secondary-btn" onclick="backToMainMenu()">Vissza</button>
             </div>
         </div>
@@ -113,6 +139,30 @@
         <p class="timer-box" style="margin-top: 15px; pointer-events: none;">Idő: <span id="tower-time-left">60</span>s</p>
     </div>
 
+    <div id="spin-game-screen" class="screen">
+        <button class="back-btn" onclick="backToMenuFromGame(event)">⬅️</button>
+        <button class="settings-btn" onclick="openSpinSettings(event)">⚙️</button>
+        
+        <h2 class="subtitle" style="margin-top: 60px;">Pörgesd meg a kereket!</h2>
+        
+        <div style="position: relative; width: 100%; display: flex; justify-content: center; align-items: center; flex-grow: 1;">
+            <div class="spin-pointer"></div>
+            <canvas id="spinCanvas" width="500" height="500"></canvas>
+        </div>
+        <button id="spin-btn" style="margin-bottom: 50px;">Pörgetés!</button>
+    </div>
+
+    <div id="settings-modal">
+        <h2>Italok Beállítása</h2>
+        <div id="item-list"></div>
+        <div class="input-row">
+            <input type="text" id="new-item-input" placeholder="Új ital neve..." maxlength="15">
+            <button id="add-btn" onclick="addSpinItem()">+</button>
+        </div>
+        <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 10px; text-align: center;">(A gép automatikusan elrejt köztük 'Koponya' mezőket!)</p>
+        <button id="close-settings-btn" onclick="closeSpinSettings()">Kész</button>
+    </div>
+
     <div id="end-screen" class="screen">
         <div id="clink-container"><div id="glass-1" class="left-glass">🥃</div><div id="glass-2" class="right-glass">🥃</div></div>
         <div id="confetti-container"></div>
@@ -137,6 +187,21 @@
             bgMusic.muted = tickSound.muted = matchSound.muted = errorSound.muted = winSound.muted = loseSound.muted = isMuted;
         }
         function playSound(a) { if (isMuted) return; a.currentTime = 0; a.play().catch(e=>console.log(e)); }
+
+        let audioCtx;
+        function playSynthesizedTick() {
+            if (isMuted) return;
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.type = 'square'; 
+            oscillator.frequency.setValueAtTime(300, audioCtx.currentTime); 
+            oscillator.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.05); 
+            gainNode.gain.setValueAtTime(1.0, audioCtx.currentTime); 
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.05);
+        }
 
         let deerInterval;
         function createDeerParticles() {
@@ -189,18 +254,28 @@
             }, 1000);
         }
 
-        function endGame(isWin) {
+        function endGame(isWin, customMessage = null) {
             isGameActive = false; clearInterval(timerInterval); cancelAnimationFrame(activeGameLoopId);
             hideAllScreens(); document.getElementById('end-screen').classList.add('active');
             bgMusic.pause(); tickSound.pause(); document.getElementById('tension-overlay').classList.remove('tension-active');
             const endMessage = document.getElementById('end-message');
-            if (isWin) { playSound(winSound); endMessage.innerHTML = 'Egészségedre!<br>Nyertél!'; endMessage.className = 'win-text'; startConfetti(); triggerClinkAnimation(); } 
-            else { playSound(loseSound); endMessage.innerText = 'Sajnos vesztettél! 🚫'; endMessage.className = 'lose-text'; }
+            
+            if (isWin) { 
+                playSound(winSound); 
+                endMessage.innerHTML = customMessage ? customMessage : 'Egészségedre!<br>Nyertél!'; 
+                endMessage.className = 'win-text'; 
+                startConfetti(); triggerClinkAnimation(); 
+            } else { 
+                playSound(loseSound); 
+                endMessage.innerHTML = customMessage ? customMessage : 'Sajnos vesztettél! 🚫'; 
+                endMessage.className = 'lose-text'; 
+            }
             
             document.getElementById('restart-game-btn').onclick = () => {
                 if(currentGameMode === 'memory') startMemoryGame(); 
                 else if(currentGameMode === 'bomb') startBombDropGame();
                 else if(currentGameMode === 'tower') startTowerGame();
+                else if(currentGameMode === 'spin') startSpinGame();
             };
         }
 
@@ -272,10 +347,8 @@
             if (bombLevel === 1) { bombShot.speedX = 3.5; bombTargetCupsThisLevel = 1; addCup(); } else if (bombLevel === 2) { bombShot.speedX = 5.5; bombTargetCupsThisLevel = 1; addCup(); } else if (bombLevel === 3) { bombShot.speedX = 4; bombTargetCupsThisLevel = 2; addCup(); addCup(); } else if (bombLevel === 4) { bombShot.speedX = 6.5; bombTargetCupsThisLevel = 2; addCup(); addCup(); } else if (bombLevel === 5) { bombShot.speedX = 8.5; bombTargetCupsThisLevel = 3; addCup(); addCup(); addCup(); } else if (bombLevel === 6) { bombShot.speedX = 10.5; bombTargetCupsThisLevel = 3; addCup(); addCup(); addCup(); } 
             if(Math.random() > 0.5) bombShot.speedX *= -1; document.getElementById('bomb-level').innerText = bombLevel; updateBombLivesDisplay();
         }
-        
         function resetBombShot() { bombShot.y = 50; bombShot.speedY = 0; bombShot.isFalling = false; bombShot.angle = 0; bombShot.x = Math.random() * (bombCanvas.width - bombShot.w); }
         function updateBombLivesDisplay() { let h = ""; for(let i=0; i<bombLives; i++) h += "❤️"; document.getElementById('bomb-lives').innerText = h; }
-        
         function startBombDropGame() {
             currentGameMode = 'bomb'; isGameActive = true; hideAllScreens(); removeDeerParticles(); document.getElementById('bomb-game-screen').classList.add('active');
             document.getElementById('confetti-container').style.display = 'none'; document.getElementById('confetti-container').innerHTML = ''; document.getElementById('clink-container').style.display = 'none'; document.getElementById('glass-1').style.animation = 'none'; document.getElementById('glass-2').style.animation = 'none';
@@ -286,16 +359,13 @@
             };
             bombGameLoop();
         }
-        
         function createBombSplash(x, y) { for(let i=0; i<15; i++) { bombSplashes.push({ x: x, y: y, vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 1) * 10, life: 1.0, color: Math.random() > 0.5 ? '#f28500' : '#421e10' }); } }
-        
         function drawBombGame() {
             bombCtx.clearRect(0, 0, bombCanvas.width, bombCanvas.height); bombCtx.fillStyle = "#5c3a21"; bombCtx.fillRect(0, bombTableY, bombCanvas.width, bombCanvas.height - bombTableY); bombCtx.fillStyle = "#3e2312"; bombCtx.fillRect(0, bombTableY, bombCanvas.width, 10); bombCtx.fillStyle = "rgba(255,255,255,0.08)"; bombCtx.fillRect(0, bombTableY+10, bombCanvas.width, 5);
             bombCups.forEach(cup => { if (cup.active) { bombCtx.drawImage(cupImg, cup.x, cup.y, cup.w, cup.h); } else if (cup.splash > 0) { bombCtx.globalAlpha = cup.splash; bombCtx.drawImage(cupImg, cup.x, cup.y, cup.w, cup.h); bombCtx.globalAlpha = 1.0; cup.splash -= 0.05; } });
             if (bombShot.y < bombTableY) { bombCtx.save(); bombCtx.translate(bombShot.x + bombShot.w/2, bombShot.y + bombShot.h/2); bombCtx.rotate(bombShot.angle); bombCtx.drawImage(shotImg, -bombShot.w/2, -bombShot.h/2, bombShot.w, bombShot.h); bombCtx.restore(); }
             for(let i=bombSplashes.length-1; i>=0; i--) { let p = bombSplashes[i]; bombCtx.globalAlpha = p.life; bombCtx.fillStyle = p.color; bombCtx.beginPath(); bombCtx.arc(p.x, p.y, 4, 0, Math.PI*2); bombCtx.fill(); bombCtx.globalAlpha = 1.0; }
         }
-        
         function updateBombGame() {
             if (!isGameActive) return;
             if (!bombShot.isFalling) { bombShot.x += bombShot.speedX; if (bombShot.x <= 0 || bombShot.x + bombShot.w >= bombCanvas.width) { bombShot.speedX *= -1; }
@@ -314,22 +384,18 @@
         const towerCanvas = document.getElementById('towerCanvas'); const tCtx = towerCanvas.getContext('2d');
         let towerBlocks = []; let activeBlock = null; let fallingSlices = []; let towerLevel = 1; let scrollY = 0; let cameraTargetY = 0; let clouds = []; let birds = []; 
         const BASE_CUP_WIDTH = 120; const CUP_HEIGHT = 70; 
-
         function initTowerGame() {
             towerBlocks = []; fallingSlices = []; scrollY = 0; cameraTargetY = 0; towerLevel = 1; document.getElementById('tower-level').innerText = towerLevel;
             clouds = []; for(let i=0; i<10; i++) { clouds.push({ x: Math.random() * towerCanvas.width, y: Math.random() * towerCanvas.height, s: Math.random() * 0.5 + 0.5, speed: Math.random() * 0.5 + 0.1 }); }
             birds = []; for(let i=0; i<5; i++) { birds.push({ x: Math.random() * towerCanvas.width, y: Math.random() * towerCanvas.height * 0.5, speed: Math.random() * 0.8 + 0.3, flap: Math.random() * 10 }); }
             let startX = (towerCanvas.width - BASE_CUP_WIDTH) / 2; let startY = towerCanvas.height - 150; 
-            towerBlocks.push({ x: startX, y: startY, w: BASE_CUP_WIDTH, h: CUP_HEIGHT });
-            spawnNextTowerBlock();
+            towerBlocks.push({ x: startX, y: startY, w: BASE_CUP_WIDTH, h: CUP_HEIGHT }); spawnNextTowerBlock();
         }
-
         function spawnNextTowerBlock() {
             const lastBlock = towerBlocks[towerBlocks.length - 1];
             activeBlock = { x: 0, y: lastBlock.y - CUP_HEIGHT, w: lastBlock.w, h: CUP_HEIGHT, speedX: 3 + (towerLevel * 0.3), isFalling: false };
             if(Math.random() > 0.5) activeBlock.speedX *= -1; 
         }
-
         function startTowerGame() {
             currentGameMode = 'tower'; isGameActive = true; hideAllScreens(); removeDeerParticles(); document.getElementById('tower-game-screen').classList.add('active');
             document.getElementById('confetti-container').style.display = 'none'; document.getElementById('confetti-container').innerHTML = ''; document.getElementById('clink-container').style.display = 'none'; document.getElementById('glass-1').style.animation = 'none'; document.getElementById('glass-2').style.animation = 'none';
@@ -340,30 +406,21 @@
             };
             towerGameLoop();
         }
-
         function drawBarrel(ctx, block, isSlice = false) {
             let bx = block.x; let by = block.y + scrollY; let bw = block.w; let bh = block.h;
             ctx.fillStyle = "#8b5a2b"; ctx.fillRect(bx, by, bw, bh);
-            let gradient = ctx.createLinearGradient(bx, by, bx + bw, by);
-            gradient.addColorStop(0, "rgba(0,0,0,0.5)"); gradient.addColorStop(0.5, "rgba(0,0,0,0)"); gradient.addColorStop(1, "rgba(0,0,0,0.5)");
-            ctx.fillStyle = gradient; ctx.fillRect(bx, by, bw, bh);
+            let gradient = ctx.createLinearGradient(bx, by, bx + bw, by); gradient.addColorStop(0, "rgba(0,0,0,0.5)"); gradient.addColorStop(0.5, "rgba(0,0,0,0)"); gradient.addColorStop(1, "rgba(0,0,0,0.5)"); ctx.fillStyle = gradient; ctx.fillRect(bx, by, bw, bh);
             ctx.fillStyle = "#111"; ctx.fillRect(bx - 2, by + 10, bw + 4, 6); ctx.fillRect(bx - 2, by + bh - 16, bw + 4, 6);
             if (bw > 20) { ctx.fillStyle = "#aaa"; for(let i=10; i<bw; i+=20) { ctx.beginPath(); ctx.arc(bx + i, by + 13, 2, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(bx + i, by + bh - 13, 2, 0, Math.PI*2); ctx.fill(); } }
             if (!isSlice) { ctx.fillStyle = "#1b321a"; ctx.fillRect(bx, by + bh/2 - 5, bw, 10); ctx.fillStyle = "#f28500"; if (bw > 10) ctx.fillRect(bx + bw/2 - 3, by + bh/2 - 3, 6, 6); }
         }
-
         function drawTowerGame() {
             tCtx.clearRect(0, 0, towerCanvas.width, towerCanvas.height);
-            tCtx.fillStyle = "rgba(255, 255, 255, 0.4)";
-            clouds.forEach(c => { tCtx.beginPath(); tCtx.arc(c.x, c.y, 30*c.s, 0, Math.PI*2); tCtx.arc(c.x+20*c.s, c.y-10*c.s, 30*c.s, 0, Math.PI*2); tCtx.arc(c.x+40*c.s, c.y, 25*c.s, 0, Math.PI*2); tCtx.fill(); c.x -= c.speed; if(c.x < -100) c.x = towerCanvas.width + 50; });
-            tCtx.strokeStyle = "rgba(0, 0, 0, 0.4)"; tCtx.lineWidth = 2;
-            birds.forEach(b => { b.x -= b.speed; b.flap += 0.15; let wingY = Math.sin(b.flap) * 6; tCtx.beginPath(); tCtx.moveTo(b.x + 12, b.y - wingY); tCtx.lineTo(b.x, b.y); tCtx.lineTo(b.x - 12, b.y - wingY); tCtx.stroke(); if(b.x < -20) { b.x = towerCanvas.width + 20; b.y = Math.random() * towerCanvas.height * 0.5; } });
+            tCtx.fillStyle = "rgba(255, 255, 255, 0.4)"; clouds.forEach(c => { tCtx.beginPath(); tCtx.arc(c.x, c.y, 30*c.s, 0, Math.PI*2); tCtx.arc(c.x+20*c.s, c.y-10*c.s, 30*c.s, 0, Math.PI*2); tCtx.arc(c.x+40*c.s, c.y, 25*c.s, 0, Math.PI*2); tCtx.fill(); c.x -= c.speed; if(c.x < -100) c.x = towerCanvas.width + 50; });
+            tCtx.strokeStyle = "rgba(0, 0, 0, 0.4)"; tCtx.lineWidth = 2; birds.forEach(b => { b.x -= b.speed; b.flap += 0.15; let wingY = Math.sin(b.flap) * 6; tCtx.beginPath(); tCtx.moveTo(b.x + 12, b.y - wingY); tCtx.lineTo(b.x, b.y); tCtx.lineTo(b.x - 12, b.y - wingY); tCtx.stroke(); if(b.x < -20) { b.x = towerCanvas.width + 20; b.y = Math.random() * towerCanvas.height * 0.5; } });
             tCtx.fillStyle = "#2c1c14"; tCtx.fillRect(0, towerCanvas.height - 150 + CUP_HEIGHT + scrollY, towerCanvas.width, 300);
-            towerBlocks.forEach(block => drawBarrel(tCtx, block, false));
-            if (activeBlock) drawBarrel(tCtx, activeBlock, false);
-            fallingSlices.forEach(slice => drawBarrel(tCtx, slice, true));
+            towerBlocks.forEach(block => drawBarrel(tCtx, block, false)); if (activeBlock) drawBarrel(tCtx, activeBlock, false); fallingSlices.forEach(slice => drawBarrel(tCtx, slice, true));
         }
-
         function updateTowerGame() {
             if (!isGameActive) return;
             scrollY += (cameraTargetY - scrollY) * 0.1;
@@ -372,8 +429,7 @@
                 activeBlock.x += activeBlock.speedX;
                 if (activeBlock.x <= 0) { activeBlock.x = 0; activeBlock.speedX = Math.abs(activeBlock.speedX); } else if (activeBlock.x + activeBlock.w >= towerCanvas.width) { activeBlock.x = towerCanvas.width - activeBlock.w; activeBlock.speedX = -Math.abs(activeBlock.speedX); }
             } else if (activeBlock && activeBlock.isFalling) {
-                activeBlock.y += 15; 
-                const lastBlock = towerBlocks[towerBlocks.length - 1];
+                activeBlock.y += 15; const lastBlock = towerBlocks[towerBlocks.length - 1];
                 if (activeBlock.y + activeBlock.h >= lastBlock.y) {
                     activeBlock.y = lastBlock.y - activeBlock.h;
                     let overlapStart = Math.max(activeBlock.x, lastBlock.x); let overlapEnd = Math.min(activeBlock.x + activeBlock.w, lastBlock.x + lastBlock.w); let overlapWidth = overlapEnd - overlapStart;
@@ -388,6 +444,121 @@
             }
         }
         function towerGameLoop() { if (!isGameActive || currentGameMode !== 'tower') return; updateTowerGame(); drawTowerGame(); activeGameLoopId = requestAnimationFrame(towerGameLoop); }
+
+        const spinCanvas = document.getElementById('spinCanvas'); const sCtx = spinCanvas.getContext('2d');
+        let spinItems = ["Option 1", "Option 2", "Option 3"]; 
+        let wheelItems = []; 
+        let spinAngle = 0; let spinSpeed = 0; let isSpinning = false; let lastTickAngle = 0;
+        let spinActionExecuted = false; 
+        const spinColors = ['#1b321a', '#f28500', '#421e10', '#d4af37', '#355f33', '#222222', '#8b3a1a'];
+
+        function openSpinSettings(e) { if(e) e.stopPropagation(); document.getElementById('settings-modal').style.display = 'flex'; renderSettingsList(); }
+        function closeSpinSettings() { document.getElementById('settings-modal').style.display = 'none'; initSpinGame(); }
+        
+        function renderSettingsList() {
+            const list = document.getElementById('item-list'); list.innerHTML = '';
+            spinItems.forEach((item, index) => {
+                const row = document.createElement('div'); row.className = 'item-row';
+                row.innerHTML = `<span>${item}</span><button class="del-btn" onclick="removeSpinItem(${index})">X</button>`;
+                list.appendChild(row);
+            });
+        }
+        function addSpinItem() {
+            const input = document.getElementById('new-item-input'); const val = input.value.trim();
+            if(val.length > 0) { spinItems.push(val); input.value = ''; renderSettingsList(); }
+        }
+        function removeSpinItem(index) { spinItems.splice(index, 1); renderSettingsList(); }
+
+        function initSpinGame() {
+            wheelItems = [];
+            let skullCount = Math.floor(spinItems.length / 3); 
+            if (spinItems.length === 0) skullCount = 0; 
+            
+            let tempItems = [...spinItems];
+            for(let i=0; i<skullCount; i++) tempItems.push("💀");
+
+            for (let i = tempItems.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [tempItems[i], tempItems[j]] = [tempItems[j], tempItems[i]]; }
+            wheelItems = tempItems;
+            if(wheelItems.length === 0) wheelItems = ["Üres"]; 
+
+            spinAngle = 0; spinSpeed = 0; isSpinning = false; lastTickAngle = 0; spinActionExecuted = false;
+            drawSpinWheel();
+        }
+
+        function startSpinGame() {
+            currentGameMode = 'spin'; isGameActive = true; hideAllScreens(); removeDeerParticles(); document.getElementById('spin-game-screen').classList.add('active');
+            document.getElementById('confetti-container').style.display = 'none'; document.getElementById('clink-container').style.display = 'none';
+            bgMusic.pause(); tickSound.pause(); document.getElementById('tension-overlay').classList.remove('tension-active');
+            initSpinGame();
+            
+            document.getElementById('spin-btn').onclick = (e) => { e.stopPropagation(); startSpinning(); };
+            document.getElementById('spin-game-screen').onpointerdown = (e) => { if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT' && document.getElementById('settings-modal').style.display === 'none') startSpinning(); };
+        }
+
+        function startSpinning() {
+            if (isSpinning || wheelItems.length === 0 || spinActionExecuted) return;
+            isSpinning = true;
+            spinActionExecuted = true; 
+            spinSpeed = Math.random() * 0.2 + 0.4; 
+            spinLoop();
+        }
+
+        function drawSpinWheel() {
+            const w = spinCanvas.width; const h = spinCanvas.height; const cx = w / 2; const cy = h / 2; const radius = w / 2 - 10;
+            sCtx.clearRect(0, 0, w, h);
+            
+            const arc = Math.PI * 2 / wheelItems.length;
+
+            for (let i = 0; i < wheelItems.length; i++) {
+                const angle = spinAngle + i * arc;
+                sCtx.beginPath(); sCtx.arc(cx, cy, radius, angle, angle + arc, false); sCtx.lineTo(cx, cy);
+                if (wheelItems[i] === "💀") { sCtx.fillStyle = "#2b2b2b"; } 
+                else { sCtx.fillStyle = spinColors[i % spinColors.length]; }
+                sCtx.fill(); sCtx.save();
+                
+                sCtx.translate(cx, cy); sCtx.rotate(angle + arc / 2);
+                sCtx.textAlign = "right"; sCtx.fillStyle = "#fff"; sCtx.font = "bold 22px sans-serif";
+                sCtx.fillText(wheelItems[i], radius - 40, 8);
+                sCtx.restore();
+            }
+            sCtx.beginPath(); sCtx.arc(cx, cy, 20, 0, Math.PI * 2); sCtx.fillStyle = "#1b321a"; sCtx.fill();
+            sCtx.lineWidth = 3; sCtx.strokeStyle = "#f28500"; sCtx.stroke();
+            sCtx.beginPath(); sCtx.arc(cx, cy, 8, 0, Math.PI * 2); sCtx.fillStyle = "#f28500"; sCtx.fill();
+        }
+
+        function spinLoop() {
+            if (!isGameActive || currentGameMode !== 'spin') return;
+            
+            spinAngle += spinSpeed;
+            spinSpeed *= 0.992; 
+
+            const arc = Math.PI * 2 / wheelItems.length;
+            let offsetAngle = spinAngle - (Math.PI / 2);
+            if (offsetAngle < 0) offsetAngle = (Math.PI * 2) - (Math.abs(offsetAngle) % (Math.PI * 2));
+            let currentTick = Math.floor(offsetAngle / arc);
+            
+            if (currentTick !== lastTickAngle && spinSpeed > 0.001) {
+                playSynthesizedTick();
+                lastTickAngle = currentTick;
+            }
+
+            drawSpinWheel();
+
+            if (spinSpeed < 0.001) {
+                isSpinning = false;
+                spinSpeed = 0;
+                let degrees = spinAngle * 180 / Math.PI + 90;
+                let arcd = arc * 180 / Math.PI;
+                let index = Math.floor((360 - degrees % 360) / arcd) % wheelItems.length;
+                setTimeout(() => { evaluateSpinResult(wheelItems[index]); }, 500); 
+            } else {
+                requestAnimationFrame(spinLoop);
+            }
+        }
+
+        function evaluateSpinResult(result) {
+            if (result === "💀") { endGame(false, "KIESTÉL<br>Próbáld újra!"); } else { endGame(true, `A nyertes:<br>${result}`); }
+        }
 
     </script>
 </body>
